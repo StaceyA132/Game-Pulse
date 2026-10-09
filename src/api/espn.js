@@ -12,7 +12,8 @@ const BASE_URL = 'https://site.api.espn.com/apis/site/v2/sports'
 // Live games first, then upcoming, then finished.
 const STATE_ORDER = { in: 0, pre: 1, post: 2 }
 
-// Tennis tournaments include hundreds of matches, so only keep ones near now.
+// Tennis tournaments include hundreds of matches, so only keep ones within
+// 12 hours of now (or of midday on the chosen date).
 const TENNIS_WINDOW_MS = 12 * 60 * 60 * 1000
 
 async function getJson(url) {
@@ -23,13 +24,16 @@ async function getJson(url) {
   return response.json()
 }
 
-export async function fetchGames(sport, league) {
-  const data = await getJson(`${BASE_URL}/${league.path}/scoreboard`)
+// `date` is 'YYYY-MM-DD', or null for today.
+export async function fetchGames(sport, league, date = null) {
+  const query = date ? `?dates=${date.replaceAll('-', '')}` : ''
+  const data = await getJson(`${BASE_URL}/${league.path}/scoreboard${query}`)
   const events = data.events ?? []
 
   let games
   if (sport.kind === 'sets') {
-    games = events.flatMap(tennisMatches)
+    const around = date ? new Date(`${date}T12:00:00`).getTime() : Date.now()
+    games = events.flatMap((event) => tennisMatches(event, around))
   } else if (sport.kind === 'leaderboard') {
     games = events.map(golfTournament)
   } else {
@@ -77,11 +81,10 @@ function teamGame(event) {
 }
 
 // Tennis: one event = a whole tournament, so pull out each singles match.
-function tennisMatches(event) {
+function tennisMatches(event, around) {
   const singles = (event.groupings ?? []).filter((g) => g.grouping.displayName.includes('Singles'))
-  const now = Date.now()
   const nearNow = (match) =>
-    match.status.type.state === 'in' || Math.abs(new Date(match.date) - now) < TENNIS_WINDOW_MS
+    match.status.type.state === 'in' || Math.abs(new Date(match.date) - around) < TENNIS_WINDOW_MS
 
   return singles.flatMap((group) =>
     group.competitions.filter(nearNow).map((match) => ({

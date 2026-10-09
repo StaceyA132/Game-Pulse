@@ -10,7 +10,7 @@ import { getMoments } from '../moments'
 // How often to check, by game state. Finished games don't need checking.
 export const POLL_INTERVALS = { in: 20_000, pre: 60_000, post: null }
 
-export function watchGame({ sport, league, game, onUpdate, onError, intervals = POLL_INTERVALS }) {
+export function watchGame({ sport, league, game, date = null, onUpdate, onError, intervals = POLL_INTERVALS }) {
   const seen = new Set()
   let stopped = false
   let timer = null
@@ -20,7 +20,7 @@ export function watchGame({ sport, league, game, onUpdate, onError, intervals = 
     try {
       // Re-fetch the scoreboard for the latest score and status. If the game has
       // dropped off it (e.g. tennis only lists matches near now), keep what we have.
-      const games = await fetchGames(sport, league)
+      const games = await fetchGames(sport, league, date)
       const latest = games.find((g) => g.id === current.id) ?? current
       const moments = await getMoments(sport, league, latest)
       if (stopped) return
