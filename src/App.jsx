@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { SPORTS, getSport, getLeague } from './data/sports'
 import { fetchGames } from './api/espn'
+import { getMoments } from './moments'
 
 const STATE_LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
 
@@ -11,6 +12,11 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  const [selectedGame, setSelectedGame] = useState(null)
+  const [moments, setMoments] = useState([])
+  const [momentsLoading, setMomentsLoading] = useState(false)
+  const [momentsError, setMomentsError] = useState(null)
+
   const sport = getSport(sportId)
   const league = getLeague(sportId, leagueId)
 
@@ -18,6 +24,7 @@ function App() {
     let cancelled = false
     setLoading(true)
     setError(null)
+    setSelectedGame(null)
 
     fetchGames(sport, league)
       .then((result) => {
@@ -35,6 +42,29 @@ function App() {
       cancelled = true
     }
   }, [sport, league])
+
+  useEffect(() => {
+    if (!selectedGame) return
+    let cancelled = false
+    setMoments([])
+    setMomentsLoading(true)
+    setMomentsError(null)
+
+    getMoments(sport, league, selectedGame)
+      .then((result) => {
+        if (!cancelled) setMoments(result)
+      })
+      .catch((err) => {
+        if (!cancelled) setMomentsError(err.message)
+      })
+      .finally(() => {
+        if (!cancelled) setMomentsLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [sport, league, selectedGame])
 
   function pickSport(id) {
     setSportId(id)
@@ -59,6 +89,25 @@ function App() {
         </button>
       ))}
 
+      {selectedGame && (
+        <section>
+          <h2>Moments: {selectedGame.name}</h2>
+          <button onClick={() => setSelectedGame(null)}>Close</button>
+          {momentsLoading && <p>Loading…</p>}
+          {momentsError && <p>Couldn't load moments: {momentsError}</p>}
+          {!momentsLoading && !momentsError && moments.length === 0 && <p>Nothing has happened yet.</p>}
+          <ol>
+            {moments.map((m) => (
+              <li key={m.id}>
+                [{m.clock}] {m.major ? '⭐ ' : ''}
+                <strong>{m.label}</strong> — {m.text}
+                {m.score && ` (${m.score})`}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
       <h2>
         {sport.emoji} {league.name} games
       </h2>
@@ -69,7 +118,8 @@ function App() {
         <ul>
           {games.map((game) => (
             <li key={game.id}>
-              <strong>[{STATE_LABELS[game.state]}]</strong> {game.name} — {game.status}
+              <strong>[{STATE_LABELS[game.state]}]</strong> {game.name} — {game.status}{' '}
+              <button onClick={() => setSelectedGame(game)}>View moments</button>
               <ul>
                 {game.competitors.map((c, i) => (
                   <li key={i}>
