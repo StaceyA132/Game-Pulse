@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { SPORTS, getSport, getLeague } from './data/sports'
 import { fetchGames } from './api/espn'
-import { getMoments } from './moments'
+import { useLiveMoments } from './hooks/useLiveMoments'
+import { POLL_INTERVALS } from './live/watchGame'
 
 const STATE_LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
 
@@ -13,12 +14,11 @@ function App() {
   const [error, setError] = useState(null)
 
   const [selectedGame, setSelectedGame] = useState(null)
-  const [moments, setMoments] = useState([])
-  const [momentsLoading, setMomentsLoading] = useState(false)
-  const [momentsError, setMomentsError] = useState(null)
 
   const sport = getSport(sportId)
   const league = getLeague(sportId, leagueId)
+  const live = useLiveMoments(sport, league, selectedGame)
+  const newIds = new Set(live.newMoments.map((m) => m.id))
 
   useEffect(() => {
     let cancelled = false
@@ -42,29 +42,6 @@ function App() {
       cancelled = true
     }
   }, [sport, league])
-
-  useEffect(() => {
-    if (!selectedGame) return
-    let cancelled = false
-    setMoments([])
-    setMomentsLoading(true)
-    setMomentsError(null)
-
-    getMoments(sport, league, selectedGame)
-      .then((result) => {
-        if (!cancelled) setMoments(result)
-      })
-      .catch((err) => {
-        if (!cancelled) setMomentsError(err.message)
-      })
-      .finally(() => {
-        if (!cancelled) setMomentsLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [sport, league, selectedGame])
 
   function pickSport(id) {
     setSportId(id)
@@ -91,15 +68,21 @@ function App() {
 
       {selectedGame && (
         <section>
-          <h2>Moments: {selectedGame.name}</h2>
+          <h2>Moments: {live.game.name}</h2>
           <button onClick={() => setSelectedGame(null)}>Close</button>
-          {momentsLoading && <p>Loading…</p>}
-          {momentsError && <p>Couldn't load moments: {momentsError}</p>}
-          {!momentsLoading && !momentsError && moments.length === 0 && <p>Nothing has happened yet.</p>}
+          <p>
+            [{STATE_LABELS[live.game.state]}] {live.game.status}
+            {POLL_INTERVALS[live.game.state] && ` · checking every ${POLL_INTERVALS[live.game.state] / 1000}s`}
+            {live.updatedAt && ` · updated ${live.updatedAt.toLocaleTimeString()}`}
+          </p>
+          {live.newMoments.length > 0 && <p>🆕 {live.newMoments.length} new since the last check</p>}
+          {live.loading && <p>Loading…</p>}
+          {live.error && <p>Couldn't update moments: {live.error}</p>}
+          {!live.loading && !live.error && live.moments.length === 0 && <p>Nothing has happened yet.</p>}
           <ol>
-            {moments.map((m) => (
+            {live.moments.map((m) => (
               <li key={m.id}>
-                [{m.clock}] {m.major ? '⭐ ' : ''}
+                {newIds.has(m.id) ? '🆕 ' : ''}[{m.clock}] {m.major ? '⭐ ' : ''}
                 <strong>{m.label}</strong> — {m.text}
                 {m.score && ` (${m.score})`}
               </li>
