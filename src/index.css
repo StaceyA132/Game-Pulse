@@ -1,6 +1,7 @@
 /* GamePulse design tokens.
    The look is "light & bold": paper background, thick black type, and one
-   solid accent color per sport (set as --accent / --accent-ink on .app). */
+   solid accent color per sport (set as --accent / --accent-ink on .app).
+   Dark mode swaps these values (see [data-theme='dark'] below). */
 
 :root {
   --paper: #f5f3ef;
@@ -8,7 +9,13 @@
   --ink: #0b0b0c;
   --muted: #6b6b70;
   --line: #e2dfd8;
+  --ink-soft: #2b2b2e;
   --live: #ff3b30;
+  --shadow-color: #0b0b0c;
+
+  /* "Board" surfaces (ticker, scoreboard) stay dark in both themes. */
+  --board: #0b0b0c;
+  --board-ink: #ffffff;
 
   --accent: #0b0b0c;
   --accent-ink: #ffffff;
@@ -18,10 +25,24 @@
 
   --radius: 10px;
   --border: 2px solid var(--ink);
-  --shadow: 4px 4px 0 var(--ink);
-  --shadow-hover: 6px 6px 0 var(--ink);
+  --shadow: 4px 4px 0 var(--shadow-color);
+  --shadow-hover: 6px 6px 0 var(--shadow-color);
 
   color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --paper: #111113;
+  --card: #1c1c20;
+  --ink: #f3f1ec;
+  --ink-soft: #d4d4d9;
+  --muted: #a0a0a8;
+  --line: #34343b;
+  --shadow-color: #000000;
+  --board: #000000;
+  --board-ink: #ffffff;
+
+  color-scheme: dark;
 }
 
 *,
@@ -34,6 +55,7 @@ html,
 body {
   margin: 0;
   background: var(--paper);
+  transition: background 0.2s ease;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -78,12 +100,13 @@ input:focus-visible {
   background: var(--card);
   font-weight: 700;
   font-size: 14px;
+  white-space: nowrap;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .btn:hover:not(:disabled) {
   transform: translate(-1px, -1px);
-  box-shadow: 2px 2px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--shadow-color);
 }
 
 .btn:disabled {

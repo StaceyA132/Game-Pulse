@@ -1,0 +1,98 @@
+.timeline {
+  gap: 0;
+}
+
+.timeline__item {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+/* The vertical line joining the dots. */
+.timeline__item::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  left: 15px;
+  width: 2px;
+  background: var(--line);
+}
+
+.timeline__item:last-child::before {
+  display: none;
+}
+
+.timeline__item--new {
+  animation: slide-in 0.4s ease-out;
+}
+
+.timeline__dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  font-size: 15px;
+  z-index: 1;
+}
+
+.timeline__item--major .timeline__dot {
+  border-color: var(--ink);
+  background: var(--accent);
+}
+
+.timeline__content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.timeline__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.timeline__label {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.timeline__clock {
+  flex-shrink: 0;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--paper);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline__text {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.timeline__score {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--card);
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+
+.timeline__item--new .timeline__dot {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
+}

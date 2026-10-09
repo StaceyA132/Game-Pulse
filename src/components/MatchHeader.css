@@ -1,0 +1,159 @@
+.match-header {
+  position: relative;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--board);
+  color: var(--board-ink);
+  box-shadow: 6px 6px 0 var(--accent);
+  overflow: hidden;
+}
+
+/* A stripe of the sport's color across the top. */
+.match-header::before {
+  content: '';
+  display: block;
+  height: 8px;
+  background: var(--accent);
+}
+
+.match-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 16px 24px 0;
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.match-header__status {
+  margin-left: auto;
+}
+
+.match-header__board {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: 'left score right';
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px 26px;
+}
+
+.match-header__side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.match-header__side--left {
+  grid-area: left;
+}
+
+.match-header__side--right {
+  grid-area: right;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.match-header__abbr {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 8vw, 80px);
+  line-height: 0.95;
+}
+
+.match-header__name {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-header__score {
+  grid-area: score;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-size: clamp(64px, 12vw, 120px);
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.match-header__score > span:not(.match-header__dash) {
+  animation: score-flash 0.9s ease-out;
+}
+
+.match-header__dash {
+  color: var(--accent);
+}
+
+@keyframes score-flash {
+  0% {
+    color: var(--accent);
+    transform: scale(1.25);
+  }
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+/* Golf and tennis */
+.match-header__event {
+  padding: 10px 24px 22px;
+}
+
+.match-header__event h2 {
+  margin-bottom: 12px;
+  font-size: clamp(32px, 5vw, 48px);
+}
+
+.match-header__event ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.match-header__event li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+}
+
+.match-header__event li strong {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.match-header__pos {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .match-header__meta,
+  .match-header__board,
+  .match-header__event {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .match-header__board {
+    gap: 8px;
+  }
+
+  .match-header__name {
+    font-size: 12px;
+  }
+}

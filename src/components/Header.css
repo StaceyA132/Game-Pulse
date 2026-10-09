@@ -43,6 +43,13 @@
   }
 }
 
+.header__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
 .header__tagline {
   margin: 0 0 8px;
   font-weight: 600;
@@ -55,7 +62,15 @@
     padding-bottom: 12px;
   }
 
+  .header__side {
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   .header__tagline {
+    margin: 0;
     font-size: 14px;
   }
 }

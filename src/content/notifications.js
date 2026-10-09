@@ -1,7 +1,7 @@
 // Turns a moment into a push notification: a short, urgent title and a
 // one-line body, the way a sports app alerts fans on their lock screen.
 //
-// { id, momentId, title, body, major }
+// { id, momentId, title, body, major, clock }
 
 const TITLE_LIMIT = 50
 const BODY_LIMIT = 140
@@ -184,6 +184,7 @@ export function makeNotification(sport, moment) {
     title: truncate(title, TITLE_LIMIT),
     body: truncate(body ?? '', BODY_LIMIT),
     major: moment.major,
+    clock: moment.clock,
   }
 }
 

@@ -1,0 +1,66 @@
+.notification {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.notification--major {
+  border-left-color: var(--accent);
+}
+
+.notification--new {
+  animation: slide-in 0.4s ease-out;
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.notification__app {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.notification__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.notification__icon rect {
+  fill: var(--board);
+}
+
+.notification__icon path {
+  fill: none;
+  stroke: var(--live);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notification__time {
+  margin-left: auto;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.notification__title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.notification__body {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}

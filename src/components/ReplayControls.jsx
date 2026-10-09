@@ -2,14 +2,15 @@ import { REPLAY_SPEEDS } from '../live/replayGame'
 
 export function ReplayControls({ speed, onSpeedChange, onStop }) {
   return (
-    <span>
-      Speed:{' '}
+    <div className="replay-controls" role="group" aria-label="Replay speed">
       {Object.keys(REPLAY_SPEEDS).map((s) => (
-        <button key={s} onClick={() => onSpeedChange(s)} disabled={s === speed}>
+        <button key={s} className="btn" aria-pressed={s === speed} onClick={() => onSpeedChange(s)}>
           {s}
         </button>
-      ))}{' '}
-      <button onClick={onStop}>Stop replay</button>
-    </span>
+      ))}
+      <button className="btn btn--accent" onClick={onStop}>
+        ⏭ Skip to end
+      </button>
+    </div>
   )
 }

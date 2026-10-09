@@ -1,0 +1,174 @@
+.game-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-view__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.replay-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.game-view__updated {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.game-view__message {
+  margin: 0;
+  padding: 28px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+.game-view__panels {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Tabs only appear on narrow screens. */
+.game-view__tabs {
+  display: none;
+}
+
+/* ---- Shared panel look (used by alerts, posts and timeline) ---- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.panel__head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  border-bottom: var(--border);
+  background: var(--paper);
+}
+
+.panel__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+
+.panel__count {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.panel__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.panel__controls .btn {
+  padding: 5px 11px;
+  font-size: 12px;
+}
+
+.panel__note {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 72vh;
+  margin: 0;
+  padding: 14px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.panel__empty {
+  margin: 0;
+  padding: 18px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* New items slide in and briefly glow in the sport's color. */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1000px) {
+  .game-view__tabs {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    border: var(--border);
+    border-radius: 999px;
+    background: var(--card);
+  }
+
+  .game-view__tab {
+    flex: 1;
+    padding: 8px 6px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .game-view__tab[aria-selected='true'] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .game-view__panels {
+    grid-template-columns: 1fr;
+  }
+
+  .game-view__panels[data-panel='alerts'] > :not(.notification-feed),
+  .game-view__panels[data-panel='posts'] > :not(.caption-feed),
+  .game-view__panels[data-panel='timeline'] > :not(.moment-feed) {
+    display: none;
+  }
+
+  .panel__body {
+    max-height: none;
+  }
+}

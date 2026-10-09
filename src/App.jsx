@@ -38,6 +38,11 @@ function App() {
     setSelected(null)
   }
 
+  function openGame(game, replay) {
+    setSelected({ game, replay })
+    window.scrollTo({ top: 0 })
+  }
+
   return (
     // The selected sport's color flows to everything through these variables.
     <div className="app" style={{ '--accent': sport.color, '--accent-ink': sport.ink }}>
@@ -46,9 +51,7 @@ function App() {
       <SportPicker sport={sport} onSportChange={changeSport} />
 
       <main className="page container">
-        <LeagueBar sport={sport} league={league} onLeagueChange={changeLeague} date={date} onDateChange={changeDate} />
-
-        {selected && (
+        {selected ? (
           <GameView
             // A new key per game/mode starts the view fresh (speed, tone, etc.).
             key={`${league.path}/${selected.game.id}/${selected.replay}`}
@@ -60,17 +63,26 @@ function App() {
             onStopReplay={() => setSelected({ ...selected, replay: false })}
             onClose={() => setSelected(null)}
           />
+        ) : (
+          <>
+            <LeagueBar
+              sport={sport}
+              league={league}
+              onLeagueChange={changeLeague}
+              date={date}
+              onDateChange={changeDate}
+            />
+            <GameList
+              sport={sport}
+              league={league}
+              date={date}
+              games={games}
+              loading={loading}
+              error={error}
+              onOpen={openGame}
+            />
+          </>
         )}
-
-        <GameList
-          sport={sport}
-          league={league}
-          date={date}
-          games={games}
-          loading={loading}
-          error={error}
-          onOpen={(game, replay) => setSelected({ game, replay })}
-        />
       </main>
     </div>
   )
