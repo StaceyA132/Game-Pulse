@@ -1,0 +1,40 @@
+.league-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.league-bar__leagues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .league-bar {
+    margin-bottom: 20px;
+  }
+
+  .league-bar .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+
+.date-picker input {
+  padding: 7px 12px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  font-weight: 600;
+  font-size: 14px;
+}

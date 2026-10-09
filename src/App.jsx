@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { SPORTS, getSport, getLeague } from './data/sports'
 import { useGames } from './hooks/useGames'
+import { Header } from './components/Header'
+import { Ticker } from './components/Ticker'
 import { SportPicker } from './components/SportPicker'
-import { DatePicker } from './components/DatePicker'
+import { LeagueBar } from './components/LeagueBar'
 import { GameList } from './components/GameList'
 import { GameView } from './components/GameView'
+import './App.css'
 
 function App() {
   const [sportId, setSportId] = useState(SPORTS[0].id)
@@ -36,35 +39,40 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>GamePulse</h1>
-      <SportPicker sport={sport} league={league} onSportChange={changeSport} onLeagueChange={changeLeague} />
-      <DatePicker date={date} onChange={changeDate} />
+    // The selected sport's color flows to everything through these variables.
+    <div className="app" style={{ '--accent': sport.color, '--accent-ink': sport.ink }}>
+      <Ticker league={league} games={games} />
+      <Header />
+      <SportPicker sport={sport} onSportChange={changeSport} />
 
-      {selected && (
-        <GameView
-          // A new key per game/mode starts the view fresh (speed, tone, etc.).
-          key={`${league.path}/${selected.game.id}/${selected.replay}`}
+      <main className="page container">
+        <LeagueBar sport={sport} league={league} onLeagueChange={changeLeague} date={date} onDateChange={changeDate} />
+
+        {selected && (
+          <GameView
+            // A new key per game/mode starts the view fresh (speed, tone, etc.).
+            key={`${league.path}/${selected.game.id}/${selected.replay}`}
+            sport={sport}
+            league={league}
+            game={selected.game}
+            date={date || null}
+            replay={selected.replay}
+            onStopReplay={() => setSelected({ ...selected, replay: false })}
+            onClose={() => setSelected(null)}
+          />
+        )}
+
+        <GameList
           sport={sport}
           league={league}
-          game={selected.game}
-          date={date || null}
-          replay={selected.replay}
-          onStopReplay={() => setSelected({ ...selected, replay: false })}
-          onClose={() => setSelected(null)}
+          date={date}
+          games={games}
+          loading={loading}
+          error={error}
+          onOpen={(game, replay) => setSelected({ game, replay })}
         />
-      )}
-
-      <GameList
-        sport={sport}
-        league={league}
-        date={date}
-        games={games}
-        loading={loading}
-        error={error}
-        onOpen={(game, replay) => setSelected({ game, replay })}
-      />
-    </main>
+      </main>
+    </div>
   )
 }
 

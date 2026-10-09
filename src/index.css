@@ -1,0 +1,138 @@
+/* GamePulse design tokens.
+   The look is "light & bold": paper background, thick black type, and one
+   solid accent color per sport (set as --accent / --accent-ink on .app). */
+
+:root {
+  --paper: #f5f3ef;
+  --card: #ffffff;
+  --ink: #0b0b0c;
+  --muted: #6b6b70;
+  --line: #e2dfd8;
+  --live: #ff3b30;
+
+  --accent: #0b0b0c;
+  --accent-ink: #ffffff;
+
+  --font-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius: 10px;
+  --border: 2px solid var(--ink);
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-hover: 6px 6px 0 var(--ink);
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Shared button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  font-weight: 700;
+  font-size: 14px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.btn:disabled {
+  cursor: default;
+}
+
+.btn--solid {
+  background: var(--ink);
+  color: var(--card);
+}
+
+.btn--accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* "Selected" state for pill groups (league, speed, tone, ...) */
+.btn[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--card);
+}
+
+/* Pulsing red dot for anything live */
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

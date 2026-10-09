@@ -1,0 +1,139 @@
+.game-card {
+  display: flex;
+  flex-direction: column;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.game-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Live games get a thick red edge. */
+.game-card--in {
+  border-left: 8px solid var(--live);
+}
+
+.game-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px 8px;
+}
+
+.game-card__status {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: right;
+}
+
+.game-card__event {
+  margin: 0;
+  padding: 0 14px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.game-card__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px 8px;
+}
+
+.game-card__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+
+.game-card__row:first-child {
+  border-top: 0;
+}
+
+.game-card__row--lost {
+  color: var(--muted);
+}
+
+.game-card__pos {
+  width: 20px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--muted);
+}
+
+.game-card__team {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.game-card__abbr {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-card__rows--names .game-card__abbr {
+  font-size: 23px;
+}
+
+.game-card__name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-card__score {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-card__sets {
+  display: flex;
+  gap: 4px;
+}
+
+.game-card__sets span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 34px;
+  border-radius: 4px;
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+
+.game-card__actions .btn {
+  padding: 8px 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.game-card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding: 12px 14px;
+  border-top: var(--border);
+  background: var(--paper);
+}

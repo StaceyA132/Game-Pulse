@@ -1,5 +1,13 @@
-const LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
+import './StatusBadge.css'
+
+const LABELS = { pre: 'Upcoming', in: 'Live', post: 'Final' }
 
 export function StatusBadge({ state, replay = false }) {
-  return <strong>[{replay ? '⏪ REPLAY' : LABELS[state]}]</strong>
+  const kind = replay ? 'replay' : state
+  return (
+    <span className={`status-badge status-badge--${kind}`}>
+      {kind === 'in' && <span className="live-dot" />}
+      {replay ? '⏪ Replay' : LABELS[state]}
+    </span>
+  )
 }

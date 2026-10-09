@@ -1,0 +1,78 @@
+.sport-tabs {
+  border-top: var(--border);
+  border-bottom: var(--border);
+  background: var(--card);
+}
+
+.sport-tabs__inner {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sport-tabs__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sport-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 14px 20px 10px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: none;
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sport-tab:first-child {
+  border-left: 1px solid var(--line);
+}
+
+.sport-tab__emoji {
+  font-size: 20px;
+  transform: translateY(-2px);
+}
+
+/* Hover previews the sport's color as a stripe along the bottom. */
+.sport-tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--tab-color);
+  transform: scaleX(0);
+  transition: transform 0.15s ease;
+}
+
+.sport-tab:hover::after {
+  transform: scaleX(1);
+}
+
+.sport-tab[aria-selected='true'] {
+  background: var(--tab-color);
+  color: var(--tab-ink);
+}
+
+.sport-tab[aria-selected='true']::after {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .sport-tab {
+    padding: 10px 14px 7px;
+    font-size: 20px;
+  }
+
+  .sport-tab__emoji {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,74 @@
+.ticker {
+  display: flex;
+  align-items: stretch;
+  height: 36px;
+  background: var(--ink);
+  color: var(--card);
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.ticker__label {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.ticker__label--live {
+  background: var(--live);
+  color: #fff;
+}
+
+.ticker__track {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+
+.ticker__scroll {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: ticker-scroll linear infinite;
+}
+
+.ticker:hover .ticker__scroll {
+  animation-play-state: paused;
+}
+
+.ticker__copy {
+  display: contents;
+}
+
+.ticker__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 22px;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ticker__item .live-dot {
+  color: var(--live);
+}
+
+.ticker__status {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

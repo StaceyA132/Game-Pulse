@@ -1,0 +1,33 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 1px;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.status-badge--in {
+  background: var(--live);
+  color: #fff;
+}
+
+.status-badge--post {
+  background: var(--ink);
+  color: var(--card);
+}
+
+.status-badge--pre {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.status-badge--replay {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
