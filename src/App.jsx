@@ -1,227 +1,69 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { SPORTS, getSport, getLeague } from './data/sports'
-import { fetchGames } from './api/espn'
-import { useLiveMoments } from './hooks/useLiveMoments'
-import { POLL_INTERVALS } from './live/watchGame'
-import { REPLAY_SPEEDS } from './live/replayGame'
-import { makeNotification, shouldNotify } from './content/notifications'
-import { useBrowserNotifications } from './hooks/useBrowserNotifications'
-import { makeCaption, TONES } from './content/captions'
-
-const STATE_LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
+import { useGames } from './hooks/useGames'
+import { SportPicker } from './components/SportPicker'
+import { DatePicker } from './components/DatePicker'
+import { GameList } from './components/GameList'
+import { GameView } from './components/GameView'
 
 function App() {
   const [sportId, setSportId] = useState(SPORTS[0].id)
   const [leagueId, setLeagueId] = useState(SPORTS[0].leagues[0].id)
   // 'YYYY-MM-DD', or '' for today.
   const [date, setDate] = useState('')
-  const [games, setGames] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  const [selectedGame, setSelectedGame] = useState(null)
-  const [replay, setReplay] = useState(false)
-  const [speed, setSpeed] = useState('1x')
-  const [notifyMode, setNotifyMode] = useState('major')
-  const [tone, setTone] = useState('hype')
-  const [copiedId, setCopiedId] = useState(null)
+  // { game, replay } for the open game, or null.
+  const [selected, setSelected] = useState(null)
 
   const sport = getSport(sportId)
   const league = getLeague(sportId, leagueId)
-  const live = useLiveMoments(sport, league, selectedGame, { date: date || null, replay, speed })
-  const newIds = new Set(live.newMoments.map((m) => m.id))
+  const { games, loading, error } = useGames(sport, league, date || null)
 
-  // Newest first, like a phone's notification list.
-  const notifications = useMemo(
-    () => live.moments.filter((m) => shouldNotify(m, notifyMode)).map((m) => makeNotification(sport, m)).reverse(),
-    [live.moments, notifyMode, sport],
-  )
-  // Only brand-new moments pop up as browser notifications, not the game's history.
-  const freshNotifications = useMemo(
-    () => live.newMoments.filter((m) => shouldNotify(m, notifyMode)).map((m) => makeNotification(sport, m)),
-    [live.newMoments, notifyMode, sport],
-  )
-  const browser = useBrowserNotifications(freshNotifications)
-
-  // Captions are for the big moments only, newest first.
-  const captions = useMemo(
-    () =>
-      live.moments
-        .filter((m) => m.major)
-        .map((m) => makeCaption(sport, league, live.game, m, tone))
-        .reverse(),
-    [live.moments, live.game, sport, league, tone],
-  )
-
-  async function copyCaption(caption) {
-    await navigator.clipboard.writeText(caption.text)
-    setCopiedId(caption.id)
-  }
-
-  useEffect(() => {
-    let cancelled = false
-    setLoading(true)
-    setError(null)
-    setSelectedGame(null)
-
-    fetchGames(sport, league, date || null)
-      .then((result) => {
-        if (!cancelled) setGames(result)
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err.message)
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-
-    // If the user switches league before this request finishes, ignore its result.
-    return () => {
-      cancelled = true
-    }
-  }, [sport, league, date])
-
-  function pickSport(id) {
+  // Changing what's listed closes the open game.
+  function changeSport(id) {
     setSportId(id)
     setLeagueId(getSport(id).leagues[0].id)
+    setSelected(null)
   }
 
-  function openGame(game, asReplay) {
-    setSelectedGame(game)
-    setReplay(asReplay)
+  function changeLeague(id) {
+    setLeagueId(id)
+    setSelected(null)
+  }
+
+  function changeDate(value) {
+    setDate(value)
+    setSelected(null)
   }
 
   return (
     <main>
       <h1>GamePulse</h1>
+      <SportPicker sport={sport} league={league} onSportChange={changeSport} onLeagueChange={changeLeague} />
+      <DatePicker date={date} onChange={changeDate} />
 
-      <h2>Sport</h2>
-      {SPORTS.map((s) => (
-        <button key={s.id} onClick={() => pickSport(s.id)} disabled={s.id === sportId}>
-          {s.emoji} {s.name}
-        </button>
-      ))}
-
-      <h2>League</h2>
-      {sport.leagues.map((l) => (
-        <button key={l.id} onClick={() => setLeagueId(l.id)} disabled={l.id === leagueId}>
-          {l.name}
-        </button>
-      ))}
-
-      <h2>Date</h2>
-      <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />{' '}
-      <button onClick={() => setDate('')} disabled={!date}>
-        Today
-      </button>
-
-      {selectedGame && (
-        <section>
-          <h2>Moments: {live.game.name}</h2>
-          <button onClick={() => setSelectedGame(null)}>Close</button>
-          {replay && (
-            <>
-              {' '}
-              Speed:{' '}
-              {Object.keys(REPLAY_SPEEDS).map((s) => (
-                <button key={s} onClick={() => setSpeed(s)} disabled={s === speed}>
-                  {s}
-                </button>
-              ))}{' '}
-              <button onClick={() => setReplay(false)}>Stop replay</button>
-            </>
-          )}
-          <p>
-            [{replay ? '⏪ REPLAY' : STATE_LABELS[live.game.state]}] {live.game.status}
-            {!replay && POLL_INTERVALS[live.game.state] && ` · checking every ${POLL_INTERVALS[live.game.state] / 1000}s`}
-            {!replay && live.updatedAt && ` · updated ${live.updatedAt.toLocaleTimeString()}`}
-          </p>
-          {!replay && live.newMoments.length > 0 && <p>🆕 {live.newMoments.length} new since the last check</p>}
-          {live.loading && <p>Loading…</p>}
-          {live.error && <p>Couldn't update moments: {live.error}</p>}
-          {!live.loading && !live.error && live.moments.length === 0 && (
-            <p>{replay ? 'Starting replay…' : 'Nothing has happened yet.'}</p>
-          )}
-          <h3>🔔 Push notifications ({notifications.length})</h3>
-          <p>
-            Send:{' '}
-            <button onClick={() => setNotifyMode('major')} disabled={notifyMode === 'major'}>
-              Major only
-            </button>
-            <button onClick={() => setNotifyMode('all')} disabled={notifyMode === 'all'}>
-              Everything
-            </button>{' '}
-            {browser.permission === 'default' && <button onClick={browser.enable}>Enable browser alerts</button>}
-            {browser.permission === 'granted' && 'Browser alerts on'}
-            {browser.permission === 'denied' && 'Browser alerts are blocked in your browser settings'}
-          </p>
-          <ul>
-            {notifications.map((n) => (
-              <li key={n.id}>
-                {newIds.has(n.momentId) ? '🆕 ' : ''}
-                <strong>{n.title}</strong>
-                <br />
-                {n.body}
-              </li>
-            ))}
-          </ul>
-
-          <h3>📱 Social captions ({captions.length})</h3>
-          <p>
-            Tone:{' '}
-            {Object.entries(TONES).map(([key, name]) => (
-              <button key={key} onClick={() => setTone(key)} disabled={key === tone}>
-                {name}
-              </button>
-            ))}
-          </p>
-          {captions.map((c) => (
-            <div key={c.id}>
-              {newIds.has(c.momentId) ? '🆕 ' : ''}
-              <pre style={{ whiteSpace: 'pre-wrap' }}>{c.text}</pre>
-              <button onClick={() => copyCaption(c)}>{copiedId === c.id ? 'Copied ✓' : 'Copy'}</button>
-              <hr />
-            </div>
-          ))}
-
-          <h3>All moments ({live.moments.length})</h3>
-          <ol>
-            {live.moments.map((m) => (
-              <li key={m.id}>
-                {newIds.has(m.id) ? '🆕 ' : ''}[{m.clock}] {m.major ? '⭐ ' : ''}
-                <strong>{m.label}</strong> — {m.text}
-                {m.score && ` (${m.score})`}
-              </li>
-            ))}
-          </ol>
-        </section>
+      {selected && (
+        <GameView
+          // A new key per game/mode starts the view fresh (speed, tone, etc.).
+          key={`${league.path}/${selected.game.id}/${selected.replay}`}
+          sport={sport}
+          league={league}
+          game={selected.game}
+          date={date || null}
+          replay={selected.replay}
+          onStopReplay={() => setSelected({ ...selected, replay: false })}
+          onClose={() => setSelected(null)}
+        />
       )}
 
-      <h2>
-        {sport.emoji} {league.name} games {date ? `on ${date}` : 'today'}
-      </h2>
-      {loading && <p>Loading…</p>}
-      {error && <p>Couldn't load games: {error}</p>}
-      {!loading && !error && games.length === 0 && <p>No games on this date.</p>}
-      {!loading && !error && (
-        <ul>
-          {games.map((game) => (
-            <li key={game.id}>
-              <strong>[{STATE_LABELS[game.state]}]</strong> {game.name} — {game.status}{' '}
-              <button onClick={() => openGame(game, false)}>View moments</button>
-              {game.state === 'post' && <button onClick={() => openGame(game, true)}>⏪ Replay</button>}
-              <ul>
-                {game.competitors.map((c, i) => (
-                  <li key={i}>
-                    {c.winner ? '🏆 ' : ''}
-                    {c.name}: {c.score || '–'}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
+      <GameList
+        sport={sport}
+        league={league}
+        date={date}
+        games={games}
+        loading={loading}
+        error={error}
+        onOpen={(game, replay) => setSelected({ game, replay })}
+      />
     </main>
   )
 }
