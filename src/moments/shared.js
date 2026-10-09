@@ -9,7 +9,7 @@ export function scoreLine(game, scoresById) {
 
 export function teamInfo(game, teamId) {
   const team = game.competitors.find((c) => c.id === teamId)
-  return team ? { name: team.name, shortName: team.shortName } : null
+  return team ? { name: team.name, nickname: team.nickname, shortName: team.shortName } : null
 }
 
 // The closing "Final" moment for a finished team game.
@@ -21,7 +21,7 @@ export function finalMoment(game) {
     type: 'final',
     label: 'Final',
     major: true,
-    team: winner ? { name: winner.name, shortName: winner.shortName } : null,
+    team: winner ? teamInfo(game, winner.id) : null,
     player: null,
     text: winner ? `${winner.name} win` : 'It ends level',
     score: scoreLine(game, scores),

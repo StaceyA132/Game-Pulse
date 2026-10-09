@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SPORTS, getSport, getLeague } from './data/sports'
 import { fetchGames } from './api/espn'
 import { useLiveMoments } from './hooks/useLiveMoments'
 import { POLL_INTERVALS } from './live/watchGame'
 import { REPLAY_SPEEDS } from './live/replayGame'
+import { makeNotification, shouldNotify } from './content/notifications'
+import { useBrowserNotifications } from './hooks/useBrowserNotifications'
 
 const STATE_LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
 
@@ -19,11 +21,24 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null)
   const [replay, setReplay] = useState(false)
   const [speed, setSpeed] = useState('1x')
+  const [notifyMode, setNotifyMode] = useState('major')
 
   const sport = getSport(sportId)
   const league = getLeague(sportId, leagueId)
   const live = useLiveMoments(sport, league, selectedGame, { date: date || null, replay, speed })
   const newIds = new Set(live.newMoments.map((m) => m.id))
+
+  // Newest first, like a phone's notification list.
+  const notifications = useMemo(
+    () => live.moments.filter((m) => shouldNotify(m, notifyMode)).map((m) => makeNotification(sport, m)).reverse(),
+    [live.moments, notifyMode, sport],
+  )
+  // Only brand-new moments pop up as browser notifications, not the game's history.
+  const freshNotifications = useMemo(
+    () => live.newMoments.filter((m) => shouldNotify(m, notifyMode)).map((m) => makeNotification(sport, m)),
+    [live.newMoments, notifyMode, sport],
+  )
+  const browser = useBrowserNotifications(freshNotifications)
 
   useEffect(() => {
     let cancelled = false
@@ -109,6 +124,31 @@ function App() {
           {!live.loading && !live.error && live.moments.length === 0 && (
             <p>{replay ? 'Starting replay…' : 'Nothing has happened yet.'}</p>
           )}
+          <h3>🔔 Push notifications ({notifications.length})</h3>
+          <p>
+            Send:{' '}
+            <button onClick={() => setNotifyMode('major')} disabled={notifyMode === 'major'}>
+              Major only
+            </button>
+            <button onClick={() => setNotifyMode('all')} disabled={notifyMode === 'all'}>
+              Everything
+            </button>{' '}
+            {browser.permission === 'default' && <button onClick={browser.enable}>Enable browser alerts</button>}
+            {browser.permission === 'granted' && 'Browser alerts on'}
+            {browser.permission === 'denied' && 'Browser alerts are blocked in your browser settings'}
+          </p>
+          <ul>
+            {notifications.map((n) => (
+              <li key={n.id}>
+                {newIds.has(n.momentId) ? '🆕 ' : ''}
+                <strong>{n.title}</strong>
+                <br />
+                {n.body}
+              </li>
+            ))}
+          </ul>
+
+          <h3>All moments ({live.moments.length})</h3>
           <ol>
             {live.moments.map((m) => (
               <li key={m.id}>

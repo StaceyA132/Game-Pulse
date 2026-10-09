@@ -6,7 +6,7 @@
 //             | 'birdie' | 'bogey' | 'set' | 'match'
 //   label   - short name for it: 'Goal', 'Try', 'Touchdown', 'Eagle', ...
 //   major   - true for the big ones (goals, touchdowns, match wins)
-//   team    - { name, shortName } or null
+//   team    - { name, nickname, shortName } or null, e.g. 'Indianapolis Colts', 'Colts', 'IND'
 //   player  - player name or null
 //   text    - one-line description of what happened
 //   score   - score right after this moment, e.g. 'LEE 1 – 2 ARS', or null

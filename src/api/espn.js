@@ -3,7 +3,7 @@
 //
 // {
 //   id, name, state: 'pre' | 'in' | 'post', status, startTime,
-//   competitors: [{ id, name, shortName, score, winner, homeAway }],
+//   competitors: [{ id, name, nickname, shortName, score, winner, homeAway }],
 //   raw  - the original ESPN data, used to build moments
 // }
 
@@ -71,6 +71,7 @@ function teamGame(event) {
     competitors: competitors.map((c) => ({
       id: c.team.id,
       name: c.team.displayName,
+      nickname: c.team.shortDisplayName ?? c.team.displayName,
       shortName: c.team.abbreviation,
       score: c.score,
       winner: c.winner ?? false,
