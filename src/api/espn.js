@@ -3,7 +3,8 @@
 //
 // {
 //   id, name, state: 'pre' | 'in' | 'post', status, startTime,
-//   competitors: [{ id, name, nickname, shortName, score, winner, homeAway }],
+//   competitors: [{ id, name, nickname, shortName, score, winner, homeAway, logo, flag }],
+//   (logo = team logo URL for team sports; flag = country flag URL for golf/tennis players)
 //   raw  - the original ESPN data, used to build moments
 // }
 
@@ -76,6 +77,7 @@ function teamGame(event) {
       score: c.score,
       winner: c.winner ?? false,
       homeAway: c.homeAway,
+      logo: c.team.logo ?? null,
     })),
     raw: event,
   }
@@ -99,6 +101,7 @@ function tennisMatches(event, around) {
         shortName: p.athlete?.shortName ?? 'TBD',
         score: (p.linescores ?? []).map((set) => set.value).join(' '),
         winner: p.winner ?? false,
+        flag: p.athlete?.flag?.href ?? null,
       })),
       raw: match,
     })),
@@ -124,6 +127,7 @@ function golfTournament(event) {
       shortName: p.athlete.shortName,
       score: p.score,
       winner: state === 'post' && p.order === 1,
+      flag: p.athlete.flag?.href ?? null,
     })),
     raw: event,
   }

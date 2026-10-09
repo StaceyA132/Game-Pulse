@@ -41,6 +41,11 @@
   z-index: 1;
 }
 
+.timeline__dot .team-logo {
+  padding: 2px;
+  box-shadow: none;
+}
+
 .timeline__item--major .timeline__dot {
   border-color: var(--ink);
   background: var(--accent);

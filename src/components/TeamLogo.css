@@ -1,0 +1,14 @@
+.team-logo {
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--line);
+  object-fit: contain;
+}
+
+.team-logo--flag {
+  padding: 0;
+  border-radius: 3px;
+  object-fit: cover;
+}

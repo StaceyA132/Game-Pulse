@@ -9,7 +9,7 @@ export function scoreLine(game, scoresById) {
 
 export function teamInfo(game, teamId) {
   const team = game.competitors.find((c) => c.id === teamId)
-  return team ? { name: team.name, nickname: team.nickname, shortName: team.shortName } : null
+  return team ? { name: team.name, nickname: team.nickname, shortName: team.shortName, logo: team.logo } : null
 }
 
 // The closing "Final" moment for a finished team game.

@@ -1,5 +1,6 @@
 import { StatusBadge } from './StatusBadge'
 import { gameStatusText } from './gameStatus'
+import { TeamLogo } from './TeamLogo'
 import './GameCard.css'
 
 // Tennis scores are set-by-set ('6 4 7'), shown as separate boxes.
@@ -38,6 +39,7 @@ export function GameCard({ sport, game, onOpen }) {
         {game.competitors.map((c, i) => (
           <li key={i} className={`game-card__row ${finished && !c.winner && !isGolf ? 'game-card__row--lost' : ''}`}>
             {isGolf && <span className="game-card__pos">{i + 1}</span>}
+            <TeamLogo competitor={c} size={byName ? 22 : 36} />
             <span className="game-card__team">
               <span className="game-card__abbr">{byName ? c.name : c.shortName}</span>
               {!byName && <span className="game-card__name">{c.name}</span>}

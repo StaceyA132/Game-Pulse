@@ -1,4 +1,5 @@
 import { gameStatusText } from './gameStatus'
+import { TeamLogo } from './TeamLogo'
 import './Ticker.css'
 
 function tickerText(game) {
@@ -16,7 +17,9 @@ export function Ticker({ league, games }) {
   const items = games.slice(0, 20).map((game) => (
     <span key={game.id} className="ticker__item">
       {game.state === 'in' && <span className="live-dot" />}
+      <TeamLogo competitor={game.competitors[0]} size={20} />
       <strong>{tickerText(game)}</strong>
+      {game.competitors.length === 2 && <TeamLogo competitor={game.competitors[1]} size={20} />}
       <span className="ticker__status">{gameStatusText(game) || 'Final'}</span>
     </span>
   ))

@@ -1,3 +1,4 @@
+import { TeamLogo } from './TeamLogo'
 import './MomentFeed.css'
 
 // A small icon for each kind of moment on the timeline.
@@ -34,7 +35,8 @@ export function MomentFeed({ sport, moments, newIds }) {
             className={`timeline__item ${m.major ? 'timeline__item--major' : ''} ${newIds.has(m.id) ? 'timeline__item--new' : ''}`}
           >
             <span className="timeline__dot" aria-hidden="true">
-              {iconFor(sport, m)}
+              {/* Scoring moments show the scoring team's logo. */}
+              {m.type === 'score' && m.team?.logo ? <TeamLogo competitor={m.team} size={26} /> : iconFor(sport, m)}
             </span>
             <div className="timeline__content">
               <div className="timeline__top">

@@ -46,6 +46,11 @@
   min-width: 0;
 }
 
+.match-header__side .team-logo {
+  margin-bottom: 8px;
+  box-shadow: none;
+}
+
 .match-header__side--left {
   grid-area: left;
 }
@@ -83,6 +88,10 @@
 
 .match-header__score > span:not(.match-header__dash) {
   animation: score-flash 0.9s ease-out;
+}
+
+.match-header__score--vs {
+  color: var(--accent);
 }
 
 .match-header__dash {
@@ -155,5 +164,10 @@
 
   .match-header__name {
     font-size: 12px;
+  }
+
+  .match-header__side .team-logo {
+    width: 44px;
+    height: 44px;
   }
 }
