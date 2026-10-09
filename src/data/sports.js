@@ -1,4 +1,5 @@
 // Every league GamePulse supports.
+// `hashtag` is the league's tag for social captions.
 // `path` is the ESPN API path: https://site.api.espn.com/apis/site/v2/sports/{path}/scoreboard
 // `kind` tells the app how that sport produces "moments":
 //   timeline    - a list of match events (goals, cards, tries)
@@ -13,9 +14,9 @@ export const SPORTS = [
     emoji: '⚽',
     kind: 'timeline',
     leagues: [
-      { id: 'eng.1', name: 'Premier League', path: 'soccer/eng.1' },
-      { id: 'uefa.champions', name: 'Champions League', path: 'soccer/uefa.champions' },
-      { id: 'usa.1', name: 'MLS', path: 'soccer/usa.1' },
+      { id: 'eng.1', name: 'Premier League', path: 'soccer/eng.1', hashtag: '#PremierLeague' },
+      { id: 'uefa.champions', name: 'Champions League', path: 'soccer/uefa.champions', hashtag: '#UCL' },
+      { id: 'usa.1', name: 'MLS', path: 'soccer/usa.1', hashtag: '#MLS' },
     ],
   },
   {
@@ -24,9 +25,9 @@ export const SPORTS = [
     emoji: '🏉',
     kind: 'timeline',
     leagues: [
-      { id: '180659', name: 'Six Nations', path: 'rugby/180659' },
-      { id: '267979', name: 'Premiership', path: 'rugby/267979' },
-      { id: '164205', name: 'Rugby World Cup', path: 'rugby/164205' },
+      { id: '180659', name: 'Six Nations', path: 'rugby/180659', hashtag: '#SixNations' },
+      { id: '267979', name: 'Premiership', path: 'rugby/267979', hashtag: '#PremiershipRugby' },
+      { id: '164205', name: 'Rugby World Cup', path: 'rugby/164205', hashtag: '#RWC' },
     ],
   },
   {
@@ -35,8 +36,8 @@ export const SPORTS = [
     emoji: '🏈',
     kind: 'scoring',
     leagues: [
-      { id: 'nfl', name: 'NFL', path: 'football/nfl' },
-      { id: 'college-football', name: 'College Football', path: 'football/college-football' },
+      { id: 'nfl', name: 'NFL', path: 'football/nfl', hashtag: '#NFL' },
+      { id: 'college-football', name: 'College Football', path: 'football/college-football', hashtag: '#CFB' },
     ],
   },
   {
@@ -45,8 +46,8 @@ export const SPORTS = [
     emoji: '🏀',
     kind: 'scoring',
     leagues: [
-      { id: 'nba', name: 'NBA', path: 'basketball/nba' },
-      { id: 'wnba', name: 'WNBA', path: 'basketball/wnba' },
+      { id: 'nba', name: 'NBA', path: 'basketball/nba', hashtag: '#NBA' },
+      { id: 'wnba', name: 'WNBA', path: 'basketball/wnba', hashtag: '#WNBA' },
     ],
   },
   {
@@ -54,21 +55,21 @@ export const SPORTS = [
     name: 'Baseball',
     emoji: '⚾',
     kind: 'scoring',
-    leagues: [{ id: 'mlb', name: 'MLB', path: 'baseball/mlb' }],
+    leagues: [{ id: 'mlb', name: 'MLB', path: 'baseball/mlb', hashtag: '#MLB' }],
   },
   {
     id: 'hockey',
     name: 'Hockey',
     emoji: '🏒',
     kind: 'scoring',
-    leagues: [{ id: 'nhl', name: 'NHL', path: 'hockey/nhl' }],
+    leagues: [{ id: 'nhl', name: 'NHL', path: 'hockey/nhl', hashtag: '#NHL' }],
   },
   {
     id: 'golf',
     name: 'Golf',
     emoji: '⛳',
     kind: 'leaderboard',
-    leagues: [{ id: 'pga', name: 'PGA Tour', path: 'golf/pga' }],
+    leagues: [{ id: 'pga', name: 'PGA Tour', path: 'golf/pga', hashtag: '#PGATour' }],
   },
   {
     id: 'tennis',
@@ -76,8 +77,8 @@ export const SPORTS = [
     emoji: '🎾',
     kind: 'sets',
     leagues: [
-      { id: 'atp', name: 'ATP', path: 'tennis/atp' },
-      { id: 'wta', name: 'WTA', path: 'tennis/wta' },
+      { id: 'atp', name: 'ATP', path: 'tennis/atp', hashtag: '#ATP' },
+      { id: 'wta', name: 'WTA', path: 'tennis/wta', hashtag: '#WTA' },
     ],
   },
 ]

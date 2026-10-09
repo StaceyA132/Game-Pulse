@@ -6,6 +6,7 @@ import { POLL_INTERVALS } from './live/watchGame'
 import { REPLAY_SPEEDS } from './live/replayGame'
 import { makeNotification, shouldNotify } from './content/notifications'
 import { useBrowserNotifications } from './hooks/useBrowserNotifications'
+import { makeCaption, TONES } from './content/captions'
 
 const STATE_LABELS = { pre: 'Upcoming', in: '🔴 LIVE', post: 'Final' }
 
@@ -22,6 +23,8 @@ function App() {
   const [replay, setReplay] = useState(false)
   const [speed, setSpeed] = useState('1x')
   const [notifyMode, setNotifyMode] = useState('major')
+  const [tone, setTone] = useState('hype')
+  const [copiedId, setCopiedId] = useState(null)
 
   const sport = getSport(sportId)
   const league = getLeague(sportId, leagueId)
@@ -39,6 +42,21 @@ function App() {
     [live.newMoments, notifyMode, sport],
   )
   const browser = useBrowserNotifications(freshNotifications)
+
+  // Captions are for the big moments only, newest first.
+  const captions = useMemo(
+    () =>
+      live.moments
+        .filter((m) => m.major)
+        .map((m) => makeCaption(sport, league, live.game, m, tone))
+        .reverse(),
+    [live.moments, live.game, sport, league, tone],
+  )
+
+  async function copyCaption(caption) {
+    await navigator.clipboard.writeText(caption.text)
+    setCopiedId(caption.id)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -147,6 +165,24 @@ function App() {
               </li>
             ))}
           </ul>
+
+          <h3>📱 Social captions ({captions.length})</h3>
+          <p>
+            Tone:{' '}
+            {Object.entries(TONES).map(([key, name]) => (
+              <button key={key} onClick={() => setTone(key)} disabled={key === tone}>
+                {name}
+              </button>
+            ))}
+          </p>
+          {captions.map((c) => (
+            <div key={c.id}>
+              {newIds.has(c.momentId) ? '🆕 ' : ''}
+              <pre style={{ whiteSpace: 'pre-wrap' }}>{c.text}</pre>
+              <button onClick={() => copyCaption(c)}>{copiedId === c.id ? 'Copied ✓' : 'Copy'}</button>
+              <hr />
+            </div>
+          ))}
 
           <h3>All moments ({live.moments.length})</h3>
           <ol>
